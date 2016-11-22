@@ -36,12 +36,7 @@ public class WekaClustering {
         try {
             if (data != null) clusterer.buildClusterer(data);
             
-            System.out.println("Number of iterations: " + clusterer.getIteration());
-            System.out.println("Sum Square Error: " + clusterer.getSumSquaredErrors());
-            for (int i = 0; i < clusterer.getNumCluster(); i++) {
-                System.out.println("Cluster " + i + " : " + clusterer.getClusterSizes()[i]);
-            }
-            
+            System.out.println(clusterer);
         }
         catch(Exception ex) {
             ex.printStackTrace();

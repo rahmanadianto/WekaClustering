@@ -21,6 +21,7 @@ import weka.core.DenseInstance;
 import weka.core.EuclideanDistance;
 import weka.core.Instances;
 import weka.core.Instance;
+import weka.core.Utils;
 
 public class MyKMeans extends AbstractClusterer {
     
@@ -76,13 +77,7 @@ public class MyKMeans extends AbstractClusterer {
     }
 
     public double getSumSquaredErrors() {
-        double sum = 0;
-        
-        for (int i = 0; i < squaredErrors.length; i++) {
-            sum += squaredErrors[i];
-        }
-        
-        return sum;
+        return Utils.sum(squaredErrors);
     }
 
     public void setMaxIteration(int maxIteration) {
@@ -277,5 +272,22 @@ public class MyKMeans extends AbstractClusterer {
     public int numberOfClusters() throws Exception {
         return numCluster;
     }
+
+    @Override
+    public String toString() {
+        
+        StringBuffer str = new StringBuffer();
+        
+        str.append("\nMy KMeans\n=========\n");
+        str.append("\nNumber of iterations: " + iteration + "\n");
+        str.append("\nSum Square Error: " + getSumSquaredErrors() + "\n");
+        for (int i = 0; i < numCluster; i++) {
+            str.append("\nCluster " + i + " : " + clusterSizes[i]);
+        }
+        
+        return str.toString();
+    }
+    
+    
     
 }
