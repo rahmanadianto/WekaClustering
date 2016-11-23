@@ -6,6 +6,7 @@
 package wekaclustering.clusterers;
 
 import java.util.ArrayList;
+import java.util.Vector;
 import javafx.scene.Node;
 import weka.clusterers.AbstractClusterer;
 import weka.core.DistanceFunction;
@@ -38,7 +39,7 @@ public class MyAgnes extends AbstractClusterer{
         instances = inpIns;
         disFunction = new EuclideanDistance(instances);
         ArrayList<ArrayList<Double>> distanceMatrix = new ArrayList<ArrayList<Double>>();
-        node = new Node[inpIns.size()];
+        node = new Node[instances.size()];
         
         // Make minimum tree node
             // Make distance matrix
@@ -66,12 +67,39 @@ public class MyAgnes extends AbstractClusterer{
             ArrayList<Double> inDistanceMatrix = distanceMatrix.get(i);
             for(int j = i; j<inDistanceMatrix.size(); j++){
                 
+                // ** Init nilai cluster
+                // ArrayList<Cluster> clusters = new ArrayList<Cluster>();
+                for (int i= 0; i < instances.size(); i++){
+                    // Vector<Integer> temp = new Vector<Integer>();
+                    // temp.add(i);
+                    // Cluster cluster = new Cluster(temp, distanceMatrix);
+                }
+                // ** 
+                // if(clusters.size() != 1){
+                    // ** Find min distance betwen cluster
+                    // ArrayList<Double> holderDistances = new ArrayList<Double>();
+                    // for (int i = 0; i < clusters.size(); i++){
+                        // Cluster cluster1 = clusters.get(i);
+                        // Double holder;
+                        // for (int j = 0; j < clusters.size(); j++){
+                            // Cluster cluster2 = clusters.get(j);
+                            // if (j != i){
+                                // holder = Cluster.minDistance();
+                            // }
+                        // }
+                        // 
+                    // }
+                // }
+                
+                
                 // while clusters.size != 1
-                    // foreach cluster : clusters
-                    // gabung cluster
-                // else
-                    // break
-                    
+                    // foreach cluster1 : clusters
+                        // foreach cluster2 : clusters
+                            // if cluster1 != cluster2
+                                // Double hasil = Cluster.minDistance(cluster1, cluster2);
+                                
+                // 
+                
                 // 
             }
         }
@@ -91,7 +119,7 @@ public class MyAgnes extends AbstractClusterer{
 
     @Override
     public int numberOfClusters() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return numCluster;
     }
     
 }
