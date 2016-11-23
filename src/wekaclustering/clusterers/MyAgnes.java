@@ -13,6 +13,8 @@ import weka.core.DistanceFunction;
 import weka.core.EuclideanDistance;
 import weka.core.Instance;
 import weka.core.Instances;
+import wekaclustering.utils.AgnesCluster;
+import wekaclustering.utils.DistanceMatrix;
 
 /**
  *
@@ -38,71 +40,58 @@ public class MyAgnes extends AbstractClusterer{
         
         instances = inpIns;
         disFunction = new EuclideanDistance(instances);
-        ArrayList<ArrayList<Double>> distanceMatrix = new ArrayList<ArrayList<Double>>();
-        node = new Node[instances.size()];
         
-        // Make minimum tree node
-            // Make distance matrix
-        for(int i= 0; i<instances.size(); i++){
-            Instance instance1 = instances.instance(i);
-            ArrayList<Double> inDistanceMatrix = new ArrayList<Double>();
-            for(int j= instances.size()-1; j>=i; j--){
-                Instance instance2 = instances.instance(j);
-                inDistanceMatrix.add(disFunction.distance(instance1, instance2));
-            }
-            distanceMatrix.add(inDistanceMatrix);
+        // ** Make minimum tree node
+            // ** Make distance matrix
+        DistanceMatrix distanceMatrix = new DistanceMatrix(instances);
+        
+            // ** Cari nilai paling kecil terurut hingga ketemu
+        // ** Init nilai cluster
+        ArrayList<AgnesCluster> clusters = new ArrayList<AgnesCluster>();
+        for (int i= 0; i < instances.size(); i++){
+             Vector<Integer> temp = new Vector<Integer>();
+             temp.add(i);
+             AgnesCluster cluster = new AgnesCluster(temp, distanceMatrix);
         }
-        
-            // Print Check
-        for(int i = 0; i< distanceMatrix.size(); i++){
-            ArrayList<Double> inDistanceMatrix = distanceMatrix.get(i);
-            for(int j = i; j<inDistanceMatrix.size(); j++){
-                System.out.print(inDistanceMatrix.get(j).toString()+" - ");
-            }
-            System.out.print("\n");
-        }
-        
-            // Cari nilai paling kecil terurut hingga ketemu
-        for(int i = 0; i< distanceMatrix.size(); i++){
-            ArrayList<Double> inDistanceMatrix = distanceMatrix.get(i);
-            for(int j = i; j<inDistanceMatrix.size(); j++){
-                
-                // ** Init nilai cluster
-                // ArrayList<Cluster> clusters = new ArrayList<Cluster>();
-                for (int i= 0; i < instances.size(); i++){
-                    // Vector<Integer> temp = new Vector<Integer>();
-                    // temp.add(i);
-                    // Cluster cluster = new Cluster(temp, distanceMatrix);
+        // ** 
+        while(clusters.size() != 1){
+            // ** Find min distance between cluster  
+            AgnesCluster init1 = clusters.get(0);
+            AgnesCluster init2 = clusters.get(1);
+            Double minDistance = init1.distance(init2, false);
+            int finalI = 0, finalJ = 1;
+            for(int i = 0; i < clusters.size(); i++){
+                for(int j = i+1; j < clusters.size(); j++){
+                    AgnesCluster cluster1 = clusters.get(i);
+                    AgnesCluster cluster2 = clusters.get(j);
+                    Double temp = cluster1.distance(cluster2, false);
+                    if(minDistance > temp){
+                        minDistance = temp;
+                        finalI = i;
+                        finalJ = j;
+                    }
                 }
-                // ** 
-                // if(clusters.size() != 1){
-                    // ** Find min distance betwen cluster
-                    // ArrayList<Double> holderDistances = new ArrayList<Double>();
-                    // for (int i = 0; i < clusters.size(); i++){
-                        // Cluster cluster1 = clusters.get(i);
-                        // Double holder;
-                        // for (int j = 0; j < clusters.size(); j++){
-                            // Cluster cluster2 = clusters.get(j);
-                            // if (j != i){
-                                // holder = Cluster.minDistance();
-                            // }
-                        // }
-                        // 
-                    // }
-                // }
-                
-                
-                // while clusters.size != 1
-                    // foreach cluster1 : clusters
-                        // foreach cluster2 : clusters
-                            // if cluster1 != cluster2
-                                // Double hasil = Cluster.minDistance(cluster1, cluster2);
-                                
-                // 
-                
-                // 
             }
+            
+            // ** Combine into one cluster
+            Vector<Integer> temp1 = clusters.get(finalI).getMembers();
+            Vector<Integer> temp2 = clusters.get(finalJ).getMembers();
+            temp1.addAll(temp2);
+            clusters.add(new AgnesCluster(temp1, distanceMatrix));
+            clusters.remove(finalI);
+            clusters.remove(finalJ);
         }
+
+
+        // while clusters.size != 1
+            // foreach cluster1 : clusters
+                // foreach cluster2 : clusters
+                    // if cluster1 != cluster2
+                        // Double hasil = Cluster.minDistance(cluster1, cluster2);
+
+        // 
+
+        // 
             
         // potong node
             // definisi threshold
