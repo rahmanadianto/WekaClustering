@@ -5,9 +5,10 @@
  */
 package wekaclustering.clusterers;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Vector;
-import javafx.scene.Node;
 import weka.clusterers.AbstractClusterer;
 import weka.core.DistanceFunction;
 import weka.core.EuclideanDistance;
@@ -23,20 +24,20 @@ import wekaclustering.utils.DistanceMatrix;
 public class MyAgnes extends AbstractClusterer{
     
     private Instances instances;
-    private int numCluster;
-    private double threshold;
+    private int numCluster = 2;
+    private double threshold = 0;
     private DistanceFunction disFunction;
     private String stringBuilder;
-    Node[] node;
+    private int iteration = 0;
+    private ArrayList<AgnesCluster> clusters = new ArrayList<AgnesCluster>();
     
     public MyAgnes(){
-        numCluster = 2;
-        stringBuilder = "";
+        stringBuilder = "\nMy KMeans\n=========\n";
     }
     
     public MyAgnes(double threshold){
         this.threshold = threshold;
-        stringBuilder = "";
+        stringBuilder = "\nMy KMeans\n=========\n";
     }
 
     @Override
@@ -45,14 +46,11 @@ public class MyAgnes extends AbstractClusterer{
         instances = new Instances(inpIns);
         disFunction = new EuclideanDistance(instances);
         
-        // ** Make minimum tree node
         // ** Make distance matrix
         DistanceMatrix distanceMatrix = new DistanceMatrix(instances);
-        //System.out.print(distanceMatrix.toString());
         
         // ** Cari nilai paling kecil terurut hingga ketemu
         // ** Init nilai cluster
-        ArrayList<AgnesCluster> clusters = new ArrayList<AgnesCluster>();
         for (int i = 0; i < instances.numInstances(); i++){
              Vector<Integer> temp = new Vector<Integer>();
              temp.add(i);
@@ -60,10 +58,9 @@ public class MyAgnes extends AbstractClusterer{
              clusters.add(cluster);
         }
         // ** Menyatukan cluster satu demi satu
-        Integer counter = 0;
         while(clusters.size() != 1){
             // ** Find min distance between cluster 
-            counter++;
+            iteration++;
             AgnesCluster init1 = clusters.get(0);
             AgnesCluster init2 = clusters.get(1);
             Double minDistance = init1.distance(init2, false);
@@ -82,7 +79,7 @@ public class MyAgnes extends AbstractClusterer{
             }
             
             // ** make string information
-            stringBuilder += counter.toString()+"  | ";
+            stringBuilder += iteration + "  | ";
             for(int i = 0; i < clusters.size(); i++){
                 stringBuilder += "[";
                 int memberSize = clusters.get(i).getMembers().size();
@@ -93,7 +90,6 @@ public class MyAgnes extends AbstractClusterer{
             }
             stringBuilder += "\n";
             
-            System.out.print("minD: "+minDistance.toString()+"\n");
             if(minDistance >= threshold){
                 break;
             }
@@ -118,6 +114,23 @@ public class MyAgnes extends AbstractClusterer{
     
     @Override
     public String toString() {
+        
+        stringBuilder += "\nNumber of iterations: " + iteration + "\n";
+        stringBuilder += "\nCluster instance: \n";
+        
+        for (int i = 0; i < clusters.size(); i++) {
+            int n = clusters.get(i).getMembers().size();
+            double p = (double) n / instances.numInstances() * 100;
+            
+            
+            Double truncatedP = BigDecimal.valueOf(p)
+                .setScale(1, RoundingMode.HALF_UP)
+                .doubleValue();
+            
+            stringBuilder += i + "   " + n;
+            stringBuilder += " (" + truncatedP + "%)\n";
+        }
+        
         return stringBuilder;
     }
     
