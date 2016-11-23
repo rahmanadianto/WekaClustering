@@ -53,7 +53,7 @@ public class MyAgnes extends AbstractClusterer{
              temp.add(i);
              AgnesCluster cluster = new AgnesCluster(temp, distanceMatrix);
         }
-        // ** 
+        // ** Menyatukan cluster satu demi satu
         while(clusters.size() != 1){
             // ** Find min distance between cluster  
             AgnesCluster init1 = clusters.get(0);
