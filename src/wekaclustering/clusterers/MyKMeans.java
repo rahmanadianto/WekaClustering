@@ -104,9 +104,8 @@ public class MyKMeans extends AbstractClusterer {
         capabilities.enable(Capability.NO_CLASS);
         capabilities.enable(Capability.NUMERIC_ATTRIBUTES);
         capabilities.enable(Capability.MISSING_VALUES);
-        
-        // Hold
-        //capabilities.enable(Capability.NOMINAL_ATTRIBUTES);
+        capabilities.enable(Capability.BINARY_ATTRIBUTES);
+        capabilities.enable(Capability.NOMINAL_ATTRIBUTES);
         
         return capabilities;
     }

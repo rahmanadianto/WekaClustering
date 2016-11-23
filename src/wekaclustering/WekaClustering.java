@@ -14,7 +14,7 @@ public class WekaClustering {
     public static void main(String[] args) {
         
         // Set file path
-        String filename = "test/data/cpu.arff";
+        String filename = "test/data/weather.nominal.arff";
         
         // Setup clusterer
         MyKMeans clusterer = new MyKMeans();
