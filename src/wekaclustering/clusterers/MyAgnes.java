@@ -26,37 +26,44 @@ public class MyAgnes extends AbstractClusterer{
     private int numCluster;
     private double threshold;
     private DistanceFunction disFunction;
+    private String stringBuilder;
     Node[] node;
     
     public MyAgnes(){
         numCluster = 2;
+        stringBuilder = "";
     }
     
     public MyAgnes(double threshold){
         this.threshold = threshold;
+        stringBuilder = "";
     }
 
     @Override
     public void buildClusterer(Instances inpIns) throws Exception {
         
-        instances = inpIns;
+        instances = new Instances(inpIns);
         disFunction = new EuclideanDistance(instances);
         
         // ** Make minimum tree node
-            // ** Make distance matrix
+        // ** Make distance matrix
         DistanceMatrix distanceMatrix = new DistanceMatrix(instances);
+        //System.out.print(distanceMatrix.toString());
         
-            // ** Cari nilai paling kecil terurut hingga ketemu
+        // ** Cari nilai paling kecil terurut hingga ketemu
         // ** Init nilai cluster
         ArrayList<AgnesCluster> clusters = new ArrayList<AgnesCluster>();
-        for (int i= 0; i < instances.size(); i++){
+        for (int i = 0; i < instances.numInstances(); i++){
              Vector<Integer> temp = new Vector<Integer>();
              temp.add(i);
              AgnesCluster cluster = new AgnesCluster(temp, distanceMatrix);
+             clusters.add(cluster);
         }
         // ** Menyatukan cluster satu demi satu
+        Integer counter = 0;
         while(clusters.size() != 1){
-            // ** Find min distance between cluster  
+            // ** Find min distance between cluster 
+            counter++;
             AgnesCluster init1 = clusters.get(0);
             AgnesCluster init2 = clusters.get(1);
             Double minDistance = init1.distance(init2, false);
@@ -74,6 +81,19 @@ public class MyAgnes extends AbstractClusterer{
                 }
             }
             
+            // ** make string information
+            stringBuilder += counter.toString()+"  | ";
+            for(int i = 0; i < clusters.size(); i++){
+                stringBuilder += "[";
+                int memberSize = clusters.get(i).getMembers().size();
+                for(int j = 0; j < memberSize-1; j++){
+                    stringBuilder += clusters.get(i).getMembers().get(j).toString()+", ";
+                }
+                stringBuilder += clusters.get(i).getMembers().get(memberSize-1).toString()+"]";
+            }
+            stringBuilder += "\n";
+            
+            System.out.print("minD: "+minDistance.toString()+"\n");
             if(minDistance >= threshold){
                 break;
             }
@@ -83,8 +103,10 @@ public class MyAgnes extends AbstractClusterer{
             Vector<Integer> temp2 = clusters.get(finalJ).getMembers();
             temp1.addAll(temp2);
             clusters.add(new AgnesCluster(temp1, distanceMatrix));
-            clusters.remove(finalI);
-            clusters.remove(finalJ);
+            AgnesCluster removeC1 = clusters.get(finalI);
+            AgnesCluster removeC2 = clusters.get(finalJ);
+            clusters.remove(removeC1);
+            clusters.remove(removeC2);
         }
                 
     }
@@ -92,6 +114,11 @@ public class MyAgnes extends AbstractClusterer{
     @Override
     public int numberOfClusters() throws Exception {
         return numCluster;
+    }
+    
+    @Override
+    public String toString() {
+        return stringBuilder;
     }
     
 }

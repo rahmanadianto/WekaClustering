@@ -8,6 +8,7 @@ package wekaclustering;
 import weka.core.Instances;
 import wekaclustering.clusterers.MyKMeans;
 import weka.core.converters.ConverterUtils.DataSource;
+import wekaclustering.clusterers.MyAgnes;
 
 public class WekaClustering {
 
@@ -17,10 +18,7 @@ public class WekaClustering {
         String filename = "test/data/weather.nominal.arff";
         
         // Setup clusterer
-        MyKMeans clusterer = new MyKMeans();
-        clusterer.setNumSeed(2);
-        clusterer.setNumCluster(2);
-        clusterer.setMaxIteration(10);
+        MyAgnes clusterer = new MyAgnes(1.4);
         
         // Load dataset
         Instances data = null;
