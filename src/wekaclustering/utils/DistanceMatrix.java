@@ -1,13 +1,13 @@
 /*
  * File         : DistanceMatrix.java
  * Author       : Rahman Adianto
- * Description  : Implement Distance Matrix 2D - Upper triangle
+ * Description  : Implement Distance Matrix 2D 
  *                A B C D E
  *              A 0 1 2 3 4
- *              B   0 3 3 3
- *              C     0 2 5
- *              D       0 7
- *              E         0
+ *              B 1 0 3 3 3
+ *              C 2 3 0 2 5
+ *              D 3 3 2 0 7
+ *              E 4 3 5 7 0
  */
 package wekaclustering.utils;
 
@@ -31,9 +31,9 @@ public class DistanceMatrix {
     
     private void buildMatrix(Instances data) {
         
-        for (int i = 0; i < data.numInstances()-1; i++) {
+        for (int i = 0; i < data.numInstances(); i++) {
             Vector<Double> v = new Vector<Double>();
-            for (int j = i + 1; j < data.numInstances(); j++) {
+            for (int j = 0; j < data.numInstances(); j++) {
                 v.add(distanceFunction.distance(data.instance(i), data.instance(j)));
             }
             distanceMatrix.add(v);

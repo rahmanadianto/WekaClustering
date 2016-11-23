@@ -34,7 +34,10 @@ public class AgnesCluster {
         
         for (int i = 0; i < members.size(); i++) {
             for (int j = 0; j < memberCluster.size(); j++) {
-                double temp = distanceMatrix.get(i).get(j);
+                
+                int x = members.get(i);
+                int y = memberCluster.get(j);
+                double temp = distanceMatrix.get(x).get(y);
                 if (isCompleteLinkage) {
                     if (d < temp) {
                         d = temp;
