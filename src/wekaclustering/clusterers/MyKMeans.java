@@ -22,6 +22,8 @@ import weka.core.EuclideanDistance;
 import weka.core.Instances;
 import weka.core.Instance;
 import weka.core.Utils;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 
 public class MyKMeans extends AbstractClusterer {
     
@@ -43,6 +45,8 @@ public class MyKMeans extends AbstractClusterer {
     private int[] clusterSizes;
     // Save Square Error of each cluster
     private double[] squaredErrors;
+    // Handle missing value replacement
+    private ReplaceMissingValues missingValueFilter;
     
     public MyKMeans() {
         super();
@@ -99,10 +103,10 @@ public class MyKMeans extends AbstractClusterer {
         capabilities.disableAll();
         capabilities.enable(Capability.NO_CLASS);
         capabilities.enable(Capability.NUMERIC_ATTRIBUTES);
+        capabilities.enable(Capability.MISSING_VALUES);
         
         // Hold
         //capabilities.enable(Capability.NOMINAL_ATTRIBUTES);
-        //capabilities.enable(Capability.MISSING_VALUES);
         
         return capabilities;
     }
@@ -115,6 +119,12 @@ public class MyKMeans extends AbstractClusterer {
         iteration = 0;
         Instances instances = new Instances(data);
         instances.setClassIndex(-1);
+        
+        // Handle missing value
+        missingValueFilter = new ReplaceMissingValues();
+        missingValueFilter.setInputFormat(instances);
+        instances = Filter.useFilter(instances, missingValueFilter);
+        
         clusterAssignments = new int[instances.numInstances()];
         distanceFunction.setInstances(instances);
         
@@ -154,7 +164,12 @@ public class MyKMeans extends AbstractClusterer {
                     emptyClusterCount++;
                 }
                 else {
-                    updateCentroid(i, tempInstances[i], true);
+                    double[] vals = new double[tempInstances[i].numAttributes()];
+        
+                    for (int j = 0; j < tempInstances[i].numAttributes(); j++) {
+                        vals[j] = tempInstances[i].meanOrMode(j);
+                    }
+                    clusterCentroids.add(new DenseInstance(1.0, vals));
                 }
             }
             
@@ -254,20 +269,6 @@ public class MyKMeans extends AbstractClusterer {
         return bestCluster;
     }
     
-    private double[] updateCentroid(int centroidIndex, Instances members, boolean updateClusterInfo) {
-        double[] vals = new double[members.numAttributes()];
-        
-        for (int i = 0; i < members.numAttributes(); i++) {
-            vals[i] = members.meanOrMode(i);
-        }
-        
-        if (updateClusterInfo) {
-            clusterCentroids.add(new DenseInstance(1.0, vals));
-        }
-        
-        return vals;
-    }
-
     @Override
     public int numberOfClusters() throws Exception {
         return numCluster;
