@@ -24,6 +24,7 @@ public class MyAgnes extends AbstractClusterer{
     
     private Instances instances;
     private int numCluster;
+    private double threshold;
     private DistanceFunction disFunction;
     Node[] node;
     
@@ -31,8 +32,8 @@ public class MyAgnes extends AbstractClusterer{
         numCluster = 2;
     }
     
-    public MyAgnes(int numCluster){
-        this.numCluster = numCluster;
+    public MyAgnes(double threshold){
+        this.threshold = threshold;
     }
 
     @Override
@@ -73,6 +74,10 @@ public class MyAgnes extends AbstractClusterer{
                 }
             }
             
+            if(minDistance >= threshold){
+                break;
+            }
+            
             // ** Combine into one cluster
             Vector<Integer> temp1 = clusters.get(finalI).getMembers();
             Vector<Integer> temp2 = clusters.get(finalJ).getMembers();
@@ -81,28 +86,6 @@ public class MyAgnes extends AbstractClusterer{
             clusters.remove(finalI);
             clusters.remove(finalJ);
         }
-
-
-        // while clusters.size != 1
-            // foreach cluster1 : clusters
-                // foreach cluster2 : clusters
-                    // if cluster1 != cluster2
-                        // Double hasil = Cluster.minDistance(cluster1, cluster2);
-
-        // 
-
-        // 
-            
-        // potong node
-            // definisi threshold
-            // foreach node in nodes
-                // find node-node yang jaraknya > threshold
-                // potong
-        
-        // cluster
-            // foreach group
-                // foreach instance
-                    // set instance.cluster = group.number
                 
     }
 
