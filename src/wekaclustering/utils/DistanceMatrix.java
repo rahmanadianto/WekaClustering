@@ -43,5 +43,22 @@ public class DistanceMatrix {
     public Vector<Vector<Double>> getDistanceMatrix() {
         return distanceMatrix;
     }
+
+    @Override
+    public String toString() {
+        StringBuffer str = new StringBuffer();
+        
+        for (int i = 0; i < distanceMatrix.size(); i++) {
+            for (int j = 0; j < distanceMatrix.get(i).size(); j++) {
+                str.append(distanceMatrix.get(i).get(j));
+                str.append(" ");
+            }
+            str.append("\n");
+        }
+        
+        return str.toString();
+    }
+    
+    
     
 }
